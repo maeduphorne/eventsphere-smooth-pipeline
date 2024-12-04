@@ -1,0 +1,47 @@
+name: CI/CD Demo Workflow
+
+on: # Trigger workflow on pushes or pull requests to the main branch
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  continuous-integration:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js environment & specify version
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      # Step 3: Install dependencies
+      - name: Install Dependencies
+        run: npm install
+
+      # Step 4: Run all tests
+      - name: Run Tests
+        run: npm test
+
+  continuous-deployment: # Run this job/workflow only after continuous-integration is successful
+    needs: continuous-integration
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Deploy to a mock deployment script
+      - name: Deploy Application
+        run: |
+          echo "Deploying application..."
+          echo "Deployment complete."
